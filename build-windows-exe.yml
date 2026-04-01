@@ -31,6 +31,17 @@ jobs:
           python -c "import sys; print('python', sys.version)"
           python -c "import webview; print('pywebview ok')"
 
+      - name: Verify build spec exists
+        shell: pwsh
+        run: |
+          Write-Host "Repo root:" (Get-Location)
+          Write-Host "List packaging\\windows:"
+          Get-ChildItem -Force packaging\\windows | Format-Table Name,Length
+          if (-not (Test-Path packaging\\windows\\plotbunny.spec)) {
+            Write-Error "Spec file not found: packaging\\windows\\plotbunny.spec"
+            exit 1
+          }
+
       - name: Build (PyInstaller onefile, no console)
         run: |
           pyinstaller --version
